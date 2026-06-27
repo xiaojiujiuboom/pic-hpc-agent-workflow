@@ -1,0 +1,52 @@
+{
+  "campaign": "lg_proton_mvp",
+  "objective": "quasi_monoenergetic_tnsa_protons",
+  "run_root": "runs",
+  "database": "runs/campaign.sqlite",
+  "epoch": {
+    "template": "templates/epoch_lg_3d.deck.tpl",
+    "binary": "$HOME/pic/bin/epoch3d",
+    "dimensions": 3,
+    "final_time_fs": 650,
+    "grid": {
+      "nx": 384,
+      "ny": 192,
+      "nz": 192
+    },
+    "particles_per_cell": 8
+  },
+  "slurm": {
+    "template": "templates/slurm_epoch.slurm.tpl",
+    "nodes": 1,
+    "ntasks": 32,
+    "time": "00:20:00",
+    "launcher": "mpirun",
+    "env": {
+      "OMPI": "/publicfs10/fs10-share/soft/share-soft/openmpi/4.1.1",
+      "AOCC": "/publicfs10/fs10-share/soft/share-soft/aocc/5.0.0",
+      "HDF5": "/publicfs10/fs10-share/soft/share-soft/hdf5/hdf5-1.14.0-aocc"
+    }
+  },
+  "initial_parameters": [
+    {
+      "l": 1,
+      "p": 0,
+      "polarization": "circular_right",
+      "a0": 30.0,
+      "w0_um": 3.0,
+      "tau_fs": 45.0,
+      "target": {
+        "carbon_thickness_um": 0.30,
+        "hydrogen_thickness_um": 0.03,
+        "hydrogen_density_nc": 12.0,
+        "hydrogen_radius_um": 0.15
+      }
+    }
+  ],
+  "metrics": [
+    "proton_peak_mev",
+    "proton_window_charge_pc",
+    "proton_window_fraction",
+    "proton_divergence_deg"
+  ]
+}
