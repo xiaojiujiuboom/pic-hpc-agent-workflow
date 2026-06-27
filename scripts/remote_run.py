@@ -33,6 +33,9 @@ class Remote:
     def target(self) -> str:
         return f"{self.user}@{self.host}"
 
+    def with_root(self, root: str) -> "Remote":
+        return Remote(host=self.host, port=self.port, user=self.user, root=root.rstrip("/"))
+
 
 def load_dotenv(path: Path) -> None:
     if not path.exists():
@@ -68,6 +71,16 @@ def remote_from_env() -> Remote:
             "先执行：cp .env.example .env，然后按你的 SSH 信息填写。"
         )
     return Remote(host=host, port=port, user=user, root=root.rstrip("/"))
+
+
+def resolve_remote_root(remote: Remote) -> Remote:
+    if not remote.root.startswith("~/"):
+        return remote
+    proc = ssh(remote, "printf '%s' \"$HOME\"", capture=True)
+    home = (proc.stdout or "").strip()
+    if not home:
+        raise SystemExit("无法解析远端 $HOME")
+    return remote.with_root(home + remote.root[1:])
 
 
 def run(cmd: list[str], *, check: bool = True, capture: bool = False) -> subprocess.CompletedProcess[str]:
@@ -121,7 +134,14 @@ def scp_to(remote: Remote, local: Path, remote_dir: str) -> None:
     ])
 
 
-def scp_from(remote: Remote, remote_path: str, local_dir: Path) -> None:
+def remote_exists(remote: Remote, remote_path: str) -> bool:
+    proc = ssh(remote, f"ls {remote_path} >/dev/null 2>&1", capture=True, check=False)
+    return proc.returncode == 0
+
+
+def scp_from(remote: Remote, remote_path: str, local_dir: Path, *, optional: bool = False) -> None:
+    if optional and not remote_exists(remote, remote_path):
+        return
     local_dir.mkdir(parents=True, exist_ok=True)
     run([
         "scp",
@@ -133,7 +153,7 @@ def scp_from(remote: Remote, remote_path: str, local_dir: Path) -> None:
         "StrictHostKeyChecking=accept-new",
         f"{remote.target}:{remote_path}",
         str(local_dir) + "/",
-    ], check=False)
+    ], check=not optional)
 
 
 def remote_run_dir(remote: Remote, run_id: str) -> str:
@@ -195,9 +215,9 @@ def action_fetch(remote: Remote, run_id: str) -> None:
     for name in ["status.json", "metrics.json", "summary.json", "job_id.txt"]:
         scp_from(remote, f"{remote_dir}/{name}", local_dir)
     # 可选结果，不存在也不报错。
-    scp_from(remote, f"{remote_dir}/*.csv", local_dir)
-    scp_from(remote, f"{remote_dir}/plots/*.png", local_dir / "plots")
-    scp_from(remote, f"{remote_dir}/plots/*.svg", local_dir / "plots")
+    scp_from(remote, f"{remote_dir}/*.csv", local_dir, optional=True)
+    scp_from(remote, f"{remote_dir}/plots/*.png", local_dir / "plots", optional=True)
+    scp_from(remote, f"{remote_dir}/plots/*.svg", local_dir / "plots", optional=True)
     print(f"小结果已拉回：{local_dir}")
 
 
@@ -245,7 +265,7 @@ def main() -> int:
         action_bundle(args.config)
         return 0
 
-    remote = remote_from_env()
+    remote = resolve_remote_root(remote_from_env())
     if args.command == "probe":
         action_probe(remote)
     elif args.command == "upload":

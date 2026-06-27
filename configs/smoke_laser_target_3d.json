@@ -1,0 +1,50 @@
+{
+  "campaign": "smoke_laser_target_3d",
+  "objective": "verify_remote_3d_density_plot",
+  "run_root": "runs",
+  "database": "runs/campaign.sqlite",
+  "epoch": {
+    "template": "templates/smoke_laser_target_3d.deck.tpl",
+    "binary": "$HOME/pic/bin/epoch3d",
+    "dimensions": 3,
+    "final_time_fs": 0.2,
+    "grid": {
+      "nx": 16,
+      "ny": 12,
+      "nz": 12
+    },
+    "particles_per_cell": 1
+  },
+  "slurm": {
+    "template": "templates/slurm_epoch.slurm.tpl",
+    "nodes": 1,
+    "ntasks": 1,
+    "time": "00:02:00",
+    "launcher": "mpirun",
+    "env": {
+      "OMPI": "/publicfs10/fs10-share/soft/share-soft/openmpi/4.1.1",
+      "AOCC": "/publicfs10/fs10-share/soft/share-soft/aocc/5.0.0",
+      "HDF5": "/publicfs10/fs10-share/soft/share-soft/hdf5/hdf5-1.14.0-aocc"
+    }
+  },
+  "initial_parameters": [
+    {
+      "l": 0,
+      "p": 0,
+      "polarization": "linear_y",
+      "a0": 1.0,
+      "w0_um": 0.8,
+      "tau_fs": 0.1,
+      "target": {
+        "carbon_thickness_um": 0.4,
+        "hydrogen_thickness_um": 0.0,
+        "hydrogen_density_nc": 1.0,
+        "hydrogen_radius_um": 1.0
+      }
+    }
+  ],
+  "metrics": [
+    "sdf_count",
+    "density_plot"
+  ]
+}

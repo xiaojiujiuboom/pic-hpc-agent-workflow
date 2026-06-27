@@ -158,6 +158,26 @@ python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
 python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
 ```
 
+最小 3D 激光打靶验证任务：
+
+```bash
+python3 scripts/remote_run.py all --config configs/smoke_laser_target_3d.json --wait --interval 15
+```
+
+这个任务只用于验证链路：
+
+```text
+本地生成 -> 上传超算 -> sbatch -> EPOCH 3D -> SDF -> 远端密度图 -> 拉回小结果
+```
+
+成功后本地会出现：
+
+```text
+runs/<run_id>/remote_results/metrics.json
+runs/<run_id>/remote_results/summary.json
+runs/<run_id>/remote_results/plots/density_initial.svg
+```
+
 如果已经有 `run_id`，也可以分步执行：
 
 ```bash

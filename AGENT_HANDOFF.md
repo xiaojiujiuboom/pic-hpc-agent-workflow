@@ -79,6 +79,24 @@ python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
 python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
 ```
 
+已跑通的最小 3D 激光打靶验证：
+
+```bash
+python3 scripts/remote_run.py all --config configs/smoke_laser_target_3d.json --wait --interval 15
+```
+
+记录：
+
+```text
+run_id: a57e418566
+job_id: 1169138
+state: COMPLETED 0:0
+elapsed: 00:00:01
+density key: Derived_Number_Density_electron
+density shape: 16 x 12 x 12
+local plot: runs/a57e418566/remote_results/plots/density_initial.svg
+```
+
 手动分步流程：
 
 1. 本地运行 `scripts/create_run_bundle.py` 生成任务包。

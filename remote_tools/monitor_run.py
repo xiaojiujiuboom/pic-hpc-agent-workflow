@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from __future__ import annotations
 
 import json
 import subprocess
@@ -8,16 +7,22 @@ from datetime import datetime
 from pathlib import Path
 
 
-def now() -> str:
+def now():
     return datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
 
 
-def run(cmd: list[str]) -> tuple[int, str, str]:
-    proc = subprocess.run(cmd, text=True, capture_output=True, check=False)
+def run(cmd):
+    proc = subprocess.run(
+        cmd,
+        universal_newlines=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
     return proc.returncode, proc.stdout, proc.stderr
 
 
-def main() -> int:
+def main():
     if len(sys.argv) != 2:
         print("usage: monitor_run.py RUN_DIR", file=sys.stderr)
         return 2
@@ -75,4 +80,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
