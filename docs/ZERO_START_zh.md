@@ -166,6 +166,26 @@ python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
 python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
 ```
 
+第一次验证自动化链路时，建议先跑最小 3D 激光打靶 smoke：
+
+```bash
+python3 scripts/remote_run.py all --config configs/smoke_laser_target_3d.json --wait --interval 15
+```
+
+如果跑通，会生成：
+
+```text
+runs/<run_id>/remote_results/metrics.json
+runs/<run_id>/remote_results/summary.json
+runs/<run_id>/remote_results/plots/density_initial.svg
+```
+
+自动化踩坑记录见：
+
+```text
+docs/AUTOMATION_NOTES_zh.md
+```
+
 ## 第 4 步：登录北京超算
 
 打开北京超算：

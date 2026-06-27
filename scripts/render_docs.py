@@ -9,6 +9,7 @@ REMOTE = ROOT / "docs" / "remote_probe.md"
 USER_GUIDE = ROOT / "docs" / "USER_GUIDE_zh.md"
 ZERO_START = ROOT / "docs" / "ZERO_START_zh.md"
 PAGES = ROOT / "docs" / "GITHUB_PAGES_zh.md"
+AUTOMATION = ROOT / "docs" / "AUTOMATION_NOTES_zh.md"
 OUT = ROOT / "docs" / "index.html"
 
 
@@ -24,10 +25,12 @@ def main() -> int:
     user_guide = USER_GUIDE.read_text()
     zero_start = ZERO_START.read_text()
     pages = PAGES.read_text()
+    automation = AUTOMATION.read_text()
     body = "\n".join([
         section("项目说明", readme),
         section("从 0 开始", zero_start),
         section("傻瓜模式用户指南", user_guide),
+        section("自动化链路注意事项", automation),
         section("北京超算环境记录", remote),
         section("GitHub Pages 部署", pages),
     ])

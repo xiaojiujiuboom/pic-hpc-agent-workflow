@@ -57,6 +57,12 @@ EPOCH 先读输出目录，再读 deck 文件名。
 - `scripts/remote_run.py`：本地自动上传、提交、监控、远端分析、拉回小结果。
 - `scripts/render_docs.py`：生成 `docs/index.html` 网页说明书。
 
+自动化链路新注意事项集中写在：
+
+```text
+docs/AUTOMATION_NOTES_zh.md
+```
+
 ## 远端工具
 
 - `remote_tools/hpcpic_env.sh`：新通用环境入口。
@@ -95,6 +101,15 @@ elapsed: 00:00:01
 density key: Derived_Number_Density_electron
 density shape: 16 x 12 x 12
 local plot: runs/a57e418566/remote_results/plots/density_initial.svg
+```
+
+这次验证踩出的关键坑：
+
+```text
+1. scp 不要直接依赖远端 ~ 展开，脚本需要先解析 $HOME。
+2. 远端 python3 是 3.6.8，remote_tools 不要用 Python 3.9+ 类型写法。
+3. *.csv / plots/*.png 可能不存在，fetch 要当作可选文件处理。
+4. 远端不依赖 matplotlib，密度图用纯 SVG 生成。
 ```
 
 手动分步流程：
