@@ -54,6 +54,7 @@ EPOCH 先读输出目录，再读 deck 文件名。
 
 - `scripts/dry_run.py`：生成本地测试运行目录和假指标。
 - `scripts/create_run_bundle.py`：打包运行目录和 `remote_tools/`，用于上传超算。
+- `scripts/remote_run.py`：本地自动上传、提交、监控、远端分析、拉回小结果。
 - `scripts/render_docs.py`：生成 `docs/index.html` 网页说明书。
 
 ## 远端工具
@@ -65,6 +66,20 @@ EPOCH 先读输出目录，再读 deck 文件名。
 - `remote_tools/analyze_run.py`
 
 ## 新任务的最短流程
+
+如果 SSH 直连已配置好，优先用：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
+```
+
+如果要等待任务结束后自动分析和拉回小结果：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
+```
+
+手动分步流程：
 
 1. 本地运行 `scripts/create_run_bundle.py` 生成任务包。
 2. 上传 `bundles/<run_id>.tar.gz` 到 `~/pic/hpc/runs`。

@@ -121,6 +121,51 @@ cat metrics.json
 cat summary.json | head -80
 ```
 
+## 本地自动模式
+
+如果已经配置好 SSH 直连，就不需要再手动复制命令。
+
+先准备本地 `.env`：
+
+```bash
+cp .env.example .env
+```
+
+把里面的 SSH 信息填成北京超算页面给你的值，例如：
+
+```text
+HPCPIC_SSH_HOST=ssh.cn-hongkong-1.paracloud.com
+HPCPIC_SSH_PORT=22
+HPCPIC_SSH_USER=你的超算账号@BSCC-M9
+HPCPIC_REMOTE_ROOT=~/pic/hpc/runs
+```
+
+测试连接：
+
+```bash
+python3 scripts/remote_run.py probe
+```
+
+生成任务包、上传、解压、提交：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
+```
+
+如果想提交后一直等到结束，并自动分析、拉回小结果：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
+```
+
+如果已经有 `run_id`，也可以分步执行：
+
+```bash
+python3 scripts/remote_run.py monitor --run-id <run_id>
+python3 scripts/remote_run.py analyze --run-id <run_id>
+python3 scripts/remote_run.py fetch --run-id <run_id>
+```
+
 只把这些小文件传回本地：
 
 ```text

@@ -140,6 +140,32 @@ bundle=/你的路径/bundles/5ce3c0c603.tar.gz
 
 记住这个 `.tar.gz` 文件，它就是要上传到超算的任务包。
 
+如果你已经配置好 SSH 直连，也可以不手动上传，直接用自动模式：
+
+```bash
+cp .env.example .env
+```
+
+把 `.env` 改成北京超算页面给你的 SSH 信息。然后测试：
+
+```bash
+python3 scripts/remote_run.py probe
+```
+
+如果能输出 `ln1`，以后可以直接：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json
+```
+
+这会自动生成任务包、上传、解压并提交。
+
+如果想让它等待任务完成后自动分析并拉回小结果：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --interval 60
+```
+
 ## 第 4 步：登录北京超算
 
 打开北京超算：

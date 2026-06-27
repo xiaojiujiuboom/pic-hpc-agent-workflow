@@ -8,15 +8,11 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from picflow.core import load_config, run_dry
+from picflow.core import CampaignConfig, load_config, run_dry
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Create a portable run bundle for BLSC.")
-    parser.add_argument("--config", default="configs/lg_proton_mvp.json")
-    args = parser.parse_args()
-
-    result = run_dry(load_config(args.config))
+def create_bundle(config: CampaignConfig) -> dict[str, str]:
+    result = run_dry(config)
     run_dir = Path(result["run_dir"])
     bundle_root = ROOT / "bundles"
     bundle_root.mkdir(exist_ok=True)
@@ -43,8 +39,23 @@ def main() -> int:
         check=True,
     )
 
+    return {
+        "run_id": result["run_id"],
+        "run_dir": str(run_dir),
+        "bundle": str(archive),
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Create a portable run bundle for BLSC.")
+    parser.add_argument("--config", default="configs/lg_proton_mvp.json")
+    args = parser.parse_args()
+
+    result = create_bundle(load_config(args.config))
+    archive = Path(result["bundle"])
+
     print(f"run_id={result['run_id']}")
-    print(f"run_dir={run_dir}")
+    print(f"run_dir={result['run_dir']}")
     print(f"bundle={archive}")
     print()
     print("Remote install:")
