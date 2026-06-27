@@ -1,4 +1,5 @@
-# EPOCH 3D input deck skeleton for LG-beam BO campaign.
+# EPOCH 3D input deck skeleton.
+# This bundled example is for an LG-beam proton campaign; replace it for other PIC studies.
 # This is a control-plane template, not yet a production-validated EPOCH deck.
 
 begin:constant
@@ -64,4 +65,3 @@ begin:output
   pz = always
   ex = always
 end:output
-

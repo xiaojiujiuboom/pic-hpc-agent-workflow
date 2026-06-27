@@ -27,7 +27,7 @@ python3 scripts/render_docs.py
 cd /Users/boom/Documents/3dpic
 git init
 git add .
-git commit -m "Add LGBO PIC workflow guide"
+git commit -m "Add PIC HPC agent workflow guide"
 git branch -M main
 git remote add origin https://github.com/<你的用户名>/<你的仓库名>.git
 git push -u origin main
@@ -38,14 +38,14 @@ git push -u origin main
 ```bash
 cd /Users/boom/Documents/3dpic
 git add .
-git commit -m "Update LGBO PIC workflow guide"
+git commit -m "Update PIC HPC agent workflow guide"
 git push
 ```
 
 本项目当前建议仓库名：
 
 ```text
-lgbo-3d-pic-control-plane
+pic-hpc-agent-workflow
 ```
 
 不要把这些目录强行传到 GitHub：

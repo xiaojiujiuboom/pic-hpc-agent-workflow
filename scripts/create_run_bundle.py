@@ -48,9 +48,9 @@ def main() -> int:
     print(f"bundle={archive}")
     print()
     print("Remote install:")
-    print("  mkdir -p ~/pic/lgbo/runs")
-    print(f"  tar -xzf {archive.name} -C ~/pic/lgbo/runs")
-    print(f"  cd ~/pic/lgbo/runs/{result['run_id']}")
+    print("  mkdir -p ~/pic/hpc/runs")
+    print(f"  tar -xzf {archive.name} -C ~/pic/hpc/runs")
+    print(f"  cd ~/pic/hpc/runs/{result['run_id']}")
     print("  bash tools/submit_run.sh .")
     return 0
 

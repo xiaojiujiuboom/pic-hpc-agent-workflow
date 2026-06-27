@@ -81,7 +81,7 @@ def slurm_values(config: CampaignConfig, run_id: str) -> dict[str, Any]:
     epoch = config.data["epoch"]
     env = slurm["env"]
     return {
-        "job_name": f"lgbo_{run_id[:8]}",
+        "job_name": f"hpcpic_{run_id[:8]}",
         "nodes": slurm["nodes"],
         "ntasks": slurm["ntasks"],
         "time": slurm["time"],

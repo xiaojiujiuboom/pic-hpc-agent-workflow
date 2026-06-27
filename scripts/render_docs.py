@@ -36,7 +36,7 @@ def main() -> int:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LGBO 3D PIC 超算工作流</title>
+  <title>PIC 超算 Agent 工作流</title>
   <style>
     body {{ margin: 0; font-family: Arial, sans-serif; line-height: 1.55; color: #172033; background: #f6f8fb; }}
     header {{ padding: 40px 24px 28px; background: #102a43; color: white; }}
@@ -50,8 +50,8 @@ def main() -> int:
 </head>
 <body>
   <header>
-    <h1>LGBO 3D PIC 超算工作流</h1>
-    <p>远端超算运行 EPOCH 3D，本地/agent 监控、分析和贝叶斯优化。大 SDF 留在超算，只回传 metrics、CSV 和图片。</p>
+    <h1>PIC 超算 Agent 工作流</h1>
+    <p>把超算当作计算后端：远端运行 EPOCH/PIC 任务，本地或 agent 负责生成任务、监控、分析和迭代。大 SDF 留在超算，只回传 metrics、CSV 和图片。</p>
   </header>
   <main>
     {body}

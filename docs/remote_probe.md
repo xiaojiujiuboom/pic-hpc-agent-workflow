@@ -172,7 +172,7 @@ print("sdfr ok")
 EOF
 ```
 
-已验证可以读取：
+已验证可以读取早期冒烟测试目录：
 
 ```text
 ~/pic/lgbo/epoch_smoke/Data/0000.sdf

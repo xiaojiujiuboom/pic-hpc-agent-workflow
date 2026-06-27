@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LGBO 3D PIC 超算工作流</title>
+  <title>PIC 超算 Agent 工作流</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; line-height: 1.55; color: #172033; background: #f6f8fb; }
     header { padding: 40px 24px 28px; background: #102a43; color: white; }
@@ -17,28 +17,34 @@
 </head>
 <body>
   <header>
-    <h1>LGBO 3D PIC 超算工作流</h1>
-    <p>远端超算运行 EPOCH 3D，本地/agent 监控、分析和贝叶斯优化。大 SDF 留在超算，只回传 metrics、CSV 和图片。</p>
+    <h1>PIC 超算 Agent 工作流</h1>
+    <p>把超算当作计算后端：远端运行 EPOCH/PIC 任务，本地或 agent 负责生成任务、监控、分析和迭代。大 SDF 留在超算，只回传 metrics、CSV 和图片。</p>
   </header>
   <main>
-    <section><h2>项目说明</h2><pre># LGBO 3D PIC 超算工作流
+    <section><h2>项目说明</h2><pre># PIC 超算 Agent 工作流
 
-这是一个给 3D EPOCH PIC 任务用的“本地 agent + 远端超算”控制流程。
+这是一个通用的“本地 agent + 远端超算”控制流程，用来管理 3D/2D PIC 数值模拟任务。
 
-项目目标：
-
-- 在北京超级云计算中心运行耗时的 3D EPOCH 模拟。
-- 大的 `.sdf` 文件留在超算，不默认传回本地。
-- 在超算上做轻量分析，生成小结果文件。
-- 本地或 agent 只读取 `metrics.json`、`summary.json`、CSV 和 PNG，用于贝叶斯优化、画图和记录。
-
-当前第一阶段目标是：
+核心思想：
 
 ```text
-LG 光束自由度 + 靶参数 -&gt; 3D EPOCH -&gt; 远端分析 -&gt; 本地贝叶斯优化
+超算只是计算工具。
+本地电脑或 agent 负责生成任务、提交任务、监控任务、分析结果、决定下一步。
 ```
 
-面向的物理问题包括质子/光子诊断与优化。
+当前已经接入并验证的是 EPOCH 3D，但这个仓库的设计不只服务 EPOCH，也不只服务贝叶斯优化。以后可以扩展到：
+
+- EPOCH 2D/3D 批量参数扫描。
+- LG 光束、普通高斯光、双色光、偏振组合等不同激光方案。
+- 质子、电子、光子、辐射、场结构等不同诊断目标。
+- 贝叶斯优化、网格扫描、主动学习、遗传算法或人工指定参数组。
+- 远端自动画图、自动提取指标、自动生成小报告。
+
+目前仓库里自带的 `configs/lg_proton_mvp.json` 是一个示例：
+
+```text
+LG 光束自由度 + 靶参数 -&gt; 3D EPOCH -&gt; 远端分析 -&gt; 本地/agent 迭代
+```
 
 如果你是第一次接触这个项目，先看：
 
@@ -60,6 +66,25 @@ LG 光束自由度 + 靶参数 -&gt; 3D EPOCH -&gt; 远端分析 -&gt; 本地贝
 更细的超算环境记录见：
 
 [docs/remote_probe.md](docs/remote_probe.md)
+
+## 给新 agent 怎么用
+
+以后迁移给其他 agent 时，最简单就是把这个仓库链接发给它，并要求它先读：
+
+```text
+README.md
+AGENT_HANDOFF.md
+docs/ZERO_START_zh.md
+docs/remote_probe.md
+```
+
+它就能知道：
+
+- 项目目的是什么。
+- 北京超算上已经验证了哪些坑。
+- EPOCH 应该怎么启动。
+- 大 SDF 为什么不传回本地。
+- 新任务包应该怎么生成、上传、提交、监控、分析。
 
 ## 本地快速开始
 
@@ -88,7 +113,7 @@ bundles/&lt;run_id&gt;.tar.gz
 把这个 `.tar.gz` 上传到超算，然后放到：
 
 ```text
-~/pic/lgbo/runs/
+~/pic/hpc/runs/
 ```
 
 ## 超算傻瓜模式
@@ -96,11 +121,11 @@ bundles/&lt;run_id&gt;.tar.gz
 在超算终端执行：
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 tar -xzf &lt;run_id&gt;.tar.gz
 cd &lt;run_id&gt;
-source tools/lgbo_env.sh
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 
@@ -143,7 +168,7 @@ Data/*.sdf
     epoch3d
   software/
     epoch_release-4.20.1/
-  lgbo/
+  hpc/
     runs/
       &lt;run_id&gt;/
         config.json
@@ -218,9 +243,9 @@ docs/index.html
 
 下一步应该做：
 
-- 把 `templates/epoch_lg_3d.deck.tpl` 换成真正的 LG 生产 deck。
-- 在 `remote_tools/analyze_run.py` 里加入真实质子/光子物理指标。
-- 把 `metrics.json` 接到贝叶斯优化循环。
+- 把示例 deck 换成真正的生产 deck。
+- 在 `remote_tools/analyze_run.py` 里加入真实物理指标。
+- 根据任务类型接入贝叶斯优化、参数扫描或其他 agent 决策逻辑。
 </pre></section>
 <section><h2>从 0 开始</h2><pre># 从 0 开始：给完全新手的操作手册
 
@@ -232,8 +257,8 @@ docs/index.html
 我们要做的是：
 
 ```text
-本地电脑/agent 负责生成任务包、监控、整理结果
-北京超级云计算中心负责真正跑 3D EPOCH
+本地电脑/agent 负责生成任务包、监控、整理结果、决定下一步
+北京超级云计算中心负责真正跑 PIC 程序，比如 EPOCH 3D
 大的 3D SDF 数据留在超算
 本地只拿回小文件：metrics.json、summary.json、CSV、PNG
 ```
@@ -242,8 +267,9 @@ docs/index.html
 
 ```text
 3D PIC 数据太大，不能每次都拖回本地
-超算更适合跑 EPOCH 和读 SDF
-本地更适合做贝叶斯优化、画图、整理报告
+超算更适合跑 EPOCH/PIC 和读 SDF
+本地更适合做参数决策、画图、整理报告
+贝叶斯优化只是其中一种用法，不是唯一用法
 ```
 
 ## 你最终要得到什么
@@ -317,8 +343,8 @@ python --version
 如果已经放到 GitHub，直接 clone：
 
 ```bash
-git clone https://github.com/xiaojiujiuboom/lgbo-3d-pic-control-plane.git
-cd lgbo-3d-pic-control-plane
+git clone https://github.com/xiaojiujiuboom/pic-hpc-agent-workflow.git
+cd pic-hpc-agent-workflow
 ```
 
 如果还没有 GitHub，也可以让别人把整个文件夹压缩发给你，然后解压，进入这个目录。
@@ -382,8 +408,8 @@ pwd
 然后准备目录：
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 ```
 
 ## 第 5 步：上传任务包
@@ -392,13 +418,13 @@ cd ~/pic/lgbo/runs
 
 ```text
 本地：bundles/&lt;run_id&gt;.tar.gz
-远端：~/pic/lgbo/runs/
+远端：~/pic/hpc/runs/
 ```
 
 上传完成后，在超算终端确认：
 
 ```bash
-cd ~/pic/lgbo/runs
+cd ~/pic/hpc/runs
 ls -lh
 ```
 
@@ -413,7 +439,7 @@ ls -lh
 把 `&lt;run_id&gt;` 换成你真实看到的名字，例如 `5ce3c0c603`：
 
 ```bash
-cd ~/pic/lgbo/runs
+cd ~/pic/hpc/runs
 tar -xzf &lt;run_id&gt;.tar.gz
 cd &lt;run_id&gt;
 ls
@@ -433,6 +459,7 @@ tools
 运行：
 
 ```bash
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 
@@ -489,7 +516,7 @@ metrics.json
 summary.json
 ```
 
-这两个就是本地 agent 或贝叶斯优化程序要读的小结果文件。
+这两个就是本地 agent、贝叶斯优化程序、参数扫描程序或画图脚本要读的小结果文件。
 
 ## 第 10 步：只下载小结果
 
@@ -571,7 +598,8 @@ docs/ZERO_START_zh.md
 这个项目的目的：
 
 - 超算上跑 3D EPOCH。
-- 本地或 agent 负责生成参数、监控任务、看结果、做贝叶斯优化。
+- 本地或 agent 负责生成参数、监控任务、看结果、决定下一步。
+- 贝叶斯优化只是一个示例，也可以做普通参数扫描、批量作业或人工指定参数组。
 - 大的 `.sdf` 文件不传回本地。
 - 超算上先分析，生成小的 `metrics.json`、`summary.json`、CSV、PNG。
 
@@ -598,11 +626,11 @@ bundle=/Users/boom/Documents/3dpic/bundles/5ce3c0c603.tar.gz
 ## 超算上运行
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 tar -xzf 5ce3c0c603.tar.gz
 cd 5ce3c0c603
-source tools/lgbo_env.sh
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 
@@ -815,7 +843,7 @@ print(&quot;sdfr ok&quot;)
 EOF
 ```
 
-已验证可以读取：
+已验证可以读取早期冒烟测试目录：
 
 ```text
 ~/pic/lgbo/epoch_smoke/Data/0000.sdf
@@ -873,7 +901,7 @@ python3 scripts/render_docs.py
 cd /Users/boom/Documents/3dpic
 git init
 git add .
-git commit -m &quot;Add LGBO PIC workflow guide&quot;
+git commit -m &quot;Add PIC HPC agent workflow guide&quot;
 git branch -M main
 git remote add origin https://github.com/&lt;你的用户名&gt;/&lt;你的仓库名&gt;.git
 git push -u origin main
@@ -884,14 +912,14 @@ git push -u origin main
 ```bash
 cd /Users/boom/Documents/3dpic
 git add .
-git commit -m &quot;Update LGBO PIC workflow guide&quot;
+git commit -m &quot;Update PIC HPC agent workflow guide&quot;
 git push
 ```
 
 本项目当前建议仓库名：
 
 ```text
-lgbo-3d-pic-control-plane
+pic-hpc-agent-workflow
 ```
 
 不要把这些目录强行传到 GitHub：

@@ -9,7 +9,8 @@ docs/ZERO_START_zh.md
 这个项目的目的：
 
 - 超算上跑 3D EPOCH。
-- 本地或 agent 负责生成参数、监控任务、看结果、做贝叶斯优化。
+- 本地或 agent 负责生成参数、监控任务、看结果、决定下一步。
+- 贝叶斯优化只是一个示例，也可以做普通参数扫描、批量作业或人工指定参数组。
 - 大的 `.sdf` 文件不传回本地。
 - 超算上先分析，生成小的 `metrics.json`、`summary.json`、CSV、PNG。
 
@@ -36,11 +37,11 @@ bundle=/Users/boom/Documents/3dpic/bundles/5ce3c0c603.tar.gz
 ## 超算上运行
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 tar -xzf 5ce3c0c603.tar.gz
 cd 5ce3c0c603
-source tools/lgbo_env.sh
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 

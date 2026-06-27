@@ -6,12 +6,14 @@
 /Users/boom/Documents/3dpic
 ```
 
-项目目的：
+项目定位：
 
-- 为北京超级云计算中心上的 EPOCH 3D PIC 任务建立可迁移工作流。
-- 用贝叶斯优化扫描 LG 光束参数和靶参数。
-- 大型 3D SDF 文件默认不传回本地。
-- 重分析尽量放在超算端，本地只拿小结果文件。
+```text
+这是一个通用 PIC 超算 Agent 工作流。
+超算只是计算后端，本地/agent 负责组织任务、监控、分析和迭代。
+```
+
+当前示例是 LG 光束 + 靶参数 + EPOCH 3D，但项目不要被理解成只服务贝叶斯优化。它也可以服务普通参数扫描、批量作业、远端画图、自动报告、不同激光构型和不同粒子/辐射诊断。
 
 用户偏好：
 
@@ -26,7 +28,7 @@
 - 观察到的登录节点：`ln1`
 - 远端 home：`/publicfs10/fs10-m9/home/m9s003861`
 - 稳定 EPOCH 路径：`~/pic/bin/epoch3d`
-- 远端运行根目录：`~/pic/lgbo/runs`
+- 远端运行根目录：`~/pic/hpc/runs`
 - 调度系统：Slurm
 - 不要显式写 `#SBATCH -p amd_m9_76`。Slurm 会自动路由到该分区，但手动指定曾经失败。
 - 可用 MPI 启动器：`/publicfs10/fs10-share/soft/share-soft/openmpi/4.1.1/bin/mpirun`
@@ -56,7 +58,8 @@ EPOCH 先读输出目录，再读 deck 文件名。
 
 ## 远端工具
 
-- `remote_tools/lgbo_env.sh`
+- `remote_tools/hpcpic_env.sh`：新通用环境入口。
+- `remote_tools/lgbo_env.sh`：旧名字兼容入口，会转到 `hpcpic_env.sh`。
 - `remote_tools/submit_run.sh`
 - `remote_tools/monitor_run.py`
 - `remote_tools/analyze_run.py`
@@ -64,17 +67,18 @@ EPOCH 先读输出目录，再读 deck 文件名。
 ## 新任务的最短流程
 
 1. 本地运行 `scripts/create_run_bundle.py` 生成任务包。
-2. 上传 `bundles/<run_id>.tar.gz` 到 `~/pic/lgbo/runs`。
+2. 上传 `bundles/<run_id>.tar.gz` 到 `~/pic/hpc/runs`。
 3. 远端解压并进入 `<run_id>` 目录。
-4. 运行 `bash tools/submit_run.sh .`。
-5. 运行 `python3 tools/monitor_run.py .` 监控。
-6. 任务完成后运行 `python3 tools/analyze_run.py .`。
-7. 只回传 `metrics.json`、`summary.json`、CSV、PNG。
+4. 运行 `source tools/hpcpic_env.sh`。
+5. 运行 `bash tools/submit_run.sh .`。
+6. 运行 `python3 tools/monitor_run.py .` 监控。
+7. 任务完成后运行 `python3 tools/analyze_run.py .`。
+8. 只回传 `metrics.json`、`summary.json`、CSV、PNG。
 
 ## 后续重点
 
-下一步不是再搭环境，而是补物理内容：
+下一步不是再搭环境，而是补具体任务：
 
-- 替换真正的 LG 生产 deck。
-- 扩展 `analyze_run.py`，从生产 SDF 中计算质子/光子指标。
-- 接入贝叶斯优化，让每一轮自动生成下一个参数点。
+- 替换真正的生产 deck。
+- 扩展 `analyze_run.py`，从生产 SDF 中计算目标物理指标。
+- 根据具体研究任务接入贝叶斯优化、参数扫描或其他 agent 决策逻辑。

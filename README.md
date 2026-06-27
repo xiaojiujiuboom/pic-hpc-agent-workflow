@@ -1,21 +1,27 @@
-# LGBO 3D PIC 超算工作流
+# PIC 超算 Agent 工作流
 
-这是一个给 3D EPOCH PIC 任务用的“本地 agent + 远端超算”控制流程。
+这是一个通用的“本地 agent + 远端超算”控制流程，用来管理 3D/2D PIC 数值模拟任务。
 
-项目目标：
-
-- 在北京超级云计算中心运行耗时的 3D EPOCH 模拟。
-- 大的 `.sdf` 文件留在超算，不默认传回本地。
-- 在超算上做轻量分析，生成小结果文件。
-- 本地或 agent 只读取 `metrics.json`、`summary.json`、CSV 和 PNG，用于贝叶斯优化、画图和记录。
-
-当前第一阶段目标是：
+核心思想：
 
 ```text
-LG 光束自由度 + 靶参数 -> 3D EPOCH -> 远端分析 -> 本地贝叶斯优化
+超算只是计算工具。
+本地电脑或 agent 负责生成任务、提交任务、监控任务、分析结果、决定下一步。
 ```
 
-面向的物理问题包括质子/光子诊断与优化。
+当前已经接入并验证的是 EPOCH 3D，但这个仓库的设计不只服务 EPOCH，也不只服务贝叶斯优化。以后可以扩展到：
+
+- EPOCH 2D/3D 批量参数扫描。
+- LG 光束、普通高斯光、双色光、偏振组合等不同激光方案。
+- 质子、电子、光子、辐射、场结构等不同诊断目标。
+- 贝叶斯优化、网格扫描、主动学习、遗传算法或人工指定参数组。
+- 远端自动画图、自动提取指标、自动生成小报告。
+
+目前仓库里自带的 `configs/lg_proton_mvp.json` 是一个示例：
+
+```text
+LG 光束自由度 + 靶参数 -> 3D EPOCH -> 远端分析 -> 本地/agent 迭代
+```
 
 如果你是第一次接触这个项目，先看：
 
@@ -37,6 +43,25 @@ LG 光束自由度 + 靶参数 -> 3D EPOCH -> 远端分析 -> 本地贝叶斯优
 更细的超算环境记录见：
 
 [docs/remote_probe.md](docs/remote_probe.md)
+
+## 给新 agent 怎么用
+
+以后迁移给其他 agent 时，最简单就是把这个仓库链接发给它，并要求它先读：
+
+```text
+README.md
+AGENT_HANDOFF.md
+docs/ZERO_START_zh.md
+docs/remote_probe.md
+```
+
+它就能知道：
+
+- 项目目的是什么。
+- 北京超算上已经验证了哪些坑。
+- EPOCH 应该怎么启动。
+- 大 SDF 为什么不传回本地。
+- 新任务包应该怎么生成、上传、提交、监控、分析。
 
 ## 本地快速开始
 
@@ -65,7 +90,7 @@ bundles/<run_id>.tar.gz
 把这个 `.tar.gz` 上传到超算，然后放到：
 
 ```text
-~/pic/lgbo/runs/
+~/pic/hpc/runs/
 ```
 
 ## 超算傻瓜模式
@@ -73,11 +98,11 @@ bundles/<run_id>.tar.gz
 在超算终端执行：
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 tar -xzf <run_id>.tar.gz
 cd <run_id>
-source tools/lgbo_env.sh
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 
@@ -120,7 +145,7 @@ Data/*.sdf
     epoch3d
   software/
     epoch_release-4.20.1/
-  lgbo/
+  hpc/
     runs/
       <run_id>/
         config.json
@@ -195,6 +220,6 @@ docs/index.html
 
 下一步应该做：
 
-- 把 `templates/epoch_lg_3d.deck.tpl` 换成真正的 LG 生产 deck。
-- 在 `remote_tools/analyze_run.py` 里加入真实质子/光子物理指标。
-- 把 `metrics.json` 接到贝叶斯优化循环。
+- 把示例 deck 换成真正的生产 deck。
+- 在 `remote_tools/analyze_run.py` 里加入真实物理指标。
+- 根据任务类型接入贝叶斯优化、参数扫描或其他 agent 决策逻辑。

@@ -8,8 +8,8 @@
 我们要做的是：
 
 ```text
-本地电脑/agent 负责生成任务包、监控、整理结果
-北京超级云计算中心负责真正跑 3D EPOCH
+本地电脑/agent 负责生成任务包、监控、整理结果、决定下一步
+北京超级云计算中心负责真正跑 PIC 程序，比如 EPOCH 3D
 大的 3D SDF 数据留在超算
 本地只拿回小文件：metrics.json、summary.json、CSV、PNG
 ```
@@ -18,8 +18,9 @@
 
 ```text
 3D PIC 数据太大，不能每次都拖回本地
-超算更适合跑 EPOCH 和读 SDF
-本地更适合做贝叶斯优化、画图、整理报告
+超算更适合跑 EPOCH/PIC 和读 SDF
+本地更适合做参数决策、画图、整理报告
+贝叶斯优化只是其中一种用法，不是唯一用法
 ```
 
 ## 你最终要得到什么
@@ -93,8 +94,8 @@ python --version
 如果已经放到 GitHub，直接 clone：
 
 ```bash
-git clone https://github.com/xiaojiujiuboom/lgbo-3d-pic-control-plane.git
-cd lgbo-3d-pic-control-plane
+git clone https://github.com/xiaojiujiuboom/pic-hpc-agent-workflow.git
+cd pic-hpc-agent-workflow
 ```
 
 如果还没有 GitHub，也可以让别人把整个文件夹压缩发给你，然后解压，进入这个目录。
@@ -158,8 +159,8 @@ pwd
 然后准备目录：
 
 ```bash
-mkdir -p ~/pic/lgbo/runs
-cd ~/pic/lgbo/runs
+mkdir -p ~/pic/hpc/runs
+cd ~/pic/hpc/runs
 ```
 
 ## 第 5 步：上传任务包
@@ -168,13 +169,13 @@ cd ~/pic/lgbo/runs
 
 ```text
 本地：bundles/<run_id>.tar.gz
-远端：~/pic/lgbo/runs/
+远端：~/pic/hpc/runs/
 ```
 
 上传完成后，在超算终端确认：
 
 ```bash
-cd ~/pic/lgbo/runs
+cd ~/pic/hpc/runs
 ls -lh
 ```
 
@@ -189,7 +190,7 @@ ls -lh
 把 `<run_id>` 换成你真实看到的名字，例如 `5ce3c0c603`：
 
 ```bash
-cd ~/pic/lgbo/runs
+cd ~/pic/hpc/runs
 tar -xzf <run_id>.tar.gz
 cd <run_id>
 ls
@@ -209,6 +210,7 @@ tools
 运行：
 
 ```bash
+source tools/hpcpic_env.sh
 bash tools/submit_run.sh .
 ```
 
@@ -265,7 +267,7 @@ metrics.json
 summary.json
 ```
 
-这两个就是本地 agent 或贝叶斯优化程序要读的小结果文件。
+这两个就是本地 agent、贝叶斯优化程序、参数扫描程序或画图脚本要读的小结果文件。
 
 ## 第 10 步：只下载小结果
 
