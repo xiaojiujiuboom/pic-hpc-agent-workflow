@@ -1,29 +1,29 @@
 {
-  "campaign": "lg_proton_mvp",
-  "objective": "quasi_monoenergetic_tnsa_protons",
+  "campaign": "lg_3d_input_check",
+  "objective": "validate_lg_3d_deck_syntax",
   "run_root": "runs",
   "database": "runs/campaign.sqlite",
   "epoch": {
     "template": "templates/epoch_lg_3d.deck.tpl",
     "binary": "$HOME/pic/bin/epoch3d",
     "dimensions": 3,
-    "final_time_fs": 650,
+    "final_time_fs": 0.2,
     "domain": {
-      "x_min_um": -8.0,
-      "x_max_um": 20.0,
-      "y_min_um": -8.0,
-      "y_max_um": 8.0,
-      "z_min_um": -8.0,
-      "z_max_um": 8.0
+      "x_min_um": -2.0,
+      "x_max_um": 2.0,
+      "y_min_um": -2.0,
+      "y_max_um": 2.0,
+      "z_min_um": -2.0,
+      "z_max_um": 2.0
     },
     "grid": {
-      "nx": 384,
-      "ny": 192,
-      "nz": 192
+      "nx": 16,
+      "ny": 12,
+      "nz": 12
     },
-    "particles_per_cell": 8,
+    "particles_per_cell": 1,
     "output": {
-      "dt_snapshot_fs": 25.0,
+      "dt_snapshot_fs": 0.2,
       "fields": "always",
       "density": "always + species",
       "particles": "never",
@@ -33,8 +33,8 @@
   "slurm": {
     "template": "templates/slurm_epoch.slurm.tpl",
     "nodes": 1,
-    "ntasks": 32,
-    "time": "00:20:00",
+    "ntasks": 1,
+    "time": "00:02:00",
     "launcher": "mpirun",
     "env": {
       "OMPI": "/publicfs10/fs10-share/soft/share-soft/openmpi/4.1.1",
@@ -46,23 +46,21 @@
     {
       "l": 1,
       "p": 0,
-      "polarization": "circular_right",
-      "a0": 30.0,
-      "w0_um": 3.0,
-      "tau_fs": 45.0,
+      "polarization": "linear_y",
+      "a0": 1.0,
+      "w0_um": 0.8,
+      "tau_fs": 0.1,
       "target": {
-        "carbon_thickness_um": 0.30,
-        "carbon_density_nc": 100.0,
-        "hydrogen_thickness_um": 0.03,
-        "hydrogen_density_nc": 12.0,
-        "hydrogen_radius_um": 0.15
+        "carbon_thickness_um": 0.4,
+        "carbon_density_nc": 1.0,
+        "hydrogen_thickness_um": 0.1,
+        "hydrogen_density_nc": 1.0,
+        "hydrogen_radius_um": 1.0
       }
     }
   ],
   "metrics": [
-    "proton_peak_mev",
-    "proton_window_charge_pc",
-    "proton_window_fraction",
-    "proton_divergence_deg"
+    "sdf_count",
+    "density_plot"
   ]
 }

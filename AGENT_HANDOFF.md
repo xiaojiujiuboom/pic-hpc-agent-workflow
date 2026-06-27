@@ -63,6 +63,12 @@ EPOCH 先读输出目录，再读 deck 文件名。
 docs/AUTOMATION_NOTES_zh.md
 ```
 
+SDF 存储和 M9 节点资源估算集中写在：
+
+```text
+docs/STORAGE_AND_RESOURCES_zh.md
+```
+
 ## 远端工具
 
 - `remote_tools/hpcpic_env.sh`：新通用环境入口。
@@ -89,6 +95,25 @@ python3 scripts/remote_run.py all --config configs/lg_proton_mvp.json --wait --i
 
 ```bash
 python3 scripts/remote_run.py all --config configs/smoke_laser_target_3d.json --wait --interval 15
+```
+
+LG 输入 deck 语法验证用：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_3d_input_check.json --wait --interval 15
+```
+
+LG 输入 deck 已验证记录：
+
+```text
+run_id: 85e14f4c04
+job_id: 1169346
+state: COMPLETED 0:0
+node: wqd10nbe11c03
+sdf_count: 2
+density key: Derived_Number_Density_electron
+density shape: 16 x 12 x 12
+local plot: runs/85e14f4c04/remote_results/plots/density_initial.svg
 ```
 
 记录：

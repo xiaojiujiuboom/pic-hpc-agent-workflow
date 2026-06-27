@@ -10,6 +10,7 @@ USER_GUIDE = ROOT / "docs" / "USER_GUIDE_zh.md"
 ZERO_START = ROOT / "docs" / "ZERO_START_zh.md"
 PAGES = ROOT / "docs" / "GITHUB_PAGES_zh.md"
 AUTOMATION = ROOT / "docs" / "AUTOMATION_NOTES_zh.md"
+STORAGE = ROOT / "docs" / "STORAGE_AND_RESOURCES_zh.md"
 OUT = ROOT / "docs" / "index.html"
 
 
@@ -26,11 +27,13 @@ def main() -> int:
     zero_start = ZERO_START.read_text()
     pages = PAGES.read_text()
     automation = AUTOMATION.read_text()
+    storage = STORAGE.read_text()
     body = "\n".join([
         section("项目说明", readme),
         section("从 0 开始", zero_start),
         section("傻瓜模式用户指南", user_guide),
         section("自动化链路注意事项", automation),
+        section("SDF 存储与超算资源估算", storage),
         section("北京超算环境记录", remote),
         section("GitHub Pages 部署", pages),
     ])

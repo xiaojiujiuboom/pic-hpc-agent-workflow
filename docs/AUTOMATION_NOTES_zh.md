@@ -53,6 +53,46 @@ local plot: runs/a57e418566/remote_results/plots/density_initial.svg
 
 这个任务只是链路验证，不是生产物理结果。
 
+## 已跑通的 LG 输入验证任务
+
+配置文件：
+
+```text
+configs/lg_3d_input_check.json
+```
+
+LG 模板：
+
+```text
+templates/epoch_lg_3d.deck.tpl
+```
+
+运行命令：
+
+```bash
+python3 scripts/remote_run.py all --config configs/lg_3d_input_check.json --wait --interval 15
+```
+
+结果：
+
+```text
+run_id: 85e14f4c04
+job_id: 1169346
+state: COMPLETED 0:0
+node: wqd10nbe11c03
+sdf_count: 2
+density key: Derived_Number_Density_electron
+density shape: 16 x 12 x 12
+local plot: runs/85e14f4c04/remote_results/plots/density_initial.svg
+```
+
+说明：
+
+```text
+这证明当前 LG deck 模板可以被远端 EPOCH 3D 接受并生成 SDF。
+但它只是小网格语法验证，不代表生产物理参数已经收敛。
+```
+
 ## SSH 直连
 
 北京超算 SSH 直连页面给出的用户名形如：

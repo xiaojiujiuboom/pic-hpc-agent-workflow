@@ -55,6 +55,8 @@ def flatten_parameters(config: CampaignConfig, params: dict[str, Any]) -> dict[s
     target = params["target"]
     epoch = config.data["epoch"]
     grid = epoch["grid"]
+    domain = epoch.get("domain", {})
+    output = epoch.get("output", {})
     flat = {
         "l": params["l"],
         "p": params["p"],
@@ -64,6 +66,7 @@ def flatten_parameters(config: CampaignConfig, params: dict[str, Any]) -> dict[s
         "w0_um": params["w0_um"],
         "tau_fs": params["tau_fs"],
         "carbon_thickness_um": target["carbon_thickness_um"],
+        "carbon_density_nc": target.get("carbon_density_nc", 100.0),
         "hydrogen_thickness_um": target["hydrogen_thickness_um"],
         "hydrogen_density_nc": target["hydrogen_density_nc"],
         "hydrogen_radius_um": target["hydrogen_radius_um"],
@@ -72,6 +75,17 @@ def flatten_parameters(config: CampaignConfig, params: dict[str, Any]) -> dict[s
         "nx": grid["nx"],
         "ny": grid["ny"],
         "nz": grid["nz"],
+        "x_min_um": domain.get("x_min_um", -8.0),
+        "x_max_um": domain.get("x_max_um", 20.0),
+        "y_min_um": domain.get("y_min_um", -8.0),
+        "y_max_um": domain.get("y_max_um", 8.0),
+        "z_min_um": domain.get("z_min_um", -8.0),
+        "z_max_um": domain.get("z_max_um", 8.0),
+        "output_dt_snapshot_fs": output.get("dt_snapshot_fs", 25.0),
+        "field_output": output.get("fields", "always"),
+        "density_output": output.get("density", "always + species"),
+        "particle_output": output.get("particles", "never"),
+        "particle_momentum_output": output.get("particle_momentum", "never"),
     }
     return flat
 
