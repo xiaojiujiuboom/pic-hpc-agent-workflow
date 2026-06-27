@@ -25,10 +25,10 @@ def main() -> int:
     zero_start = ZERO_START.read_text()
     pages = PAGES.read_text()
     body = "\n".join([
-        section("README", readme),
+        section("项目说明", readme),
         section("从 0 开始", zero_start),
         section("傻瓜模式用户指南", user_guide),
-        section("BLSC Remote Notes", remote),
+        section("北京超算环境记录", remote),
         section("GitHub Pages 部署", pages),
     ])
     OUT.write_text(f"""<!doctype html>
@@ -36,7 +36,7 @@ def main() -> int:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LGBO 3D PIC Workflow</title>
+  <title>LGBO 3D PIC 超算工作流</title>
   <style>
     body {{ margin: 0; font-family: Arial, sans-serif; line-height: 1.55; color: #172033; background: #f6f8fb; }}
     header {{ padding: 40px 24px 28px; background: #102a43; color: white; }}
@@ -50,7 +50,7 @@ def main() -> int:
 </head>
 <body>
   <header>
-    <h1>LGBO 3D PIC Workflow</h1>
+    <h1>LGBO 3D PIC 超算工作流</h1>
     <p>远端超算运行 EPOCH 3D，本地/agent 监控、分析和贝叶斯优化。大 SDF 留在超算，只回传 metrics、CSV 和图片。</p>
   </header>
   <main>
