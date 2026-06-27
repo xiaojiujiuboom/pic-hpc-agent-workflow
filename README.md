@@ -141,7 +141,7 @@ python3 scripts/render_docs.py
 Open:
 
 ```text
-docs/site/index.html
+docs/index.html
 ```
 
 To put the guide on GitHub Pages or another Git host, follow

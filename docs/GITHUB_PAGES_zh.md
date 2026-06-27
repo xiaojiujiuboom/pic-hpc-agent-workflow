@@ -14,7 +14,7 @@ python3 scripts/render_docs.py
 生成的网页在：
 
 ```text
-/Users/boom/Documents/3dpic/docs/site/index.html
+/Users/boom/Documents/3dpic/docs/index.html
 ```
 
 直接双击这个文件也能看。
@@ -72,7 +72,7 @@ Settings -> Pages -> Build and deployment
 ```text
 Source: Deploy from a branch
 Branch: main
-Folder: /docs/site
+Folder: /docs
 Save
 ```
 

@@ -9,7 +9,7 @@ REMOTE = ROOT / "docs" / "remote_probe.md"
 USER_GUIDE = ROOT / "docs" / "USER_GUIDE_zh.md"
 ZERO_START = ROOT / "docs" / "ZERO_START_zh.md"
 PAGES = ROOT / "docs" / "GITHUB_PAGES_zh.md"
-OUT = ROOT / "docs" / "site" / "index.html"
+OUT = ROOT / "docs" / "index.html"
 
 
 def section(title: str, text: str) -> str:
